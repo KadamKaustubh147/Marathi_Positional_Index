@@ -7,6 +7,7 @@ phrase and proximity queries.
 
 - Source: `Dataset/Final_docID.csv`
 - 27,560 documents (`Text`, `Label`, `doc_id` columns)
+- Dataset link: https://github.com/l3cube-pune/MarathiNLP
 
 ## Index
 
