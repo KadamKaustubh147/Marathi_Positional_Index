@@ -9,7 +9,7 @@ from retrieval import load_index, search, tokenize
 SAMPLE_SIZE = 1000
 PHRASE_SAMPLE_SIZE = 200
 SEED = 42
-CSV_PATH = "Dataset/Final_docID.csv"
+CSV_PATH = "data/Final_docID.csv"
 
 
 def index_stats(index):

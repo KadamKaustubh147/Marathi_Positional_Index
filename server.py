@@ -6,7 +6,7 @@ from retrieval import load_index, search
 
 app = FastAPI()
 index = load_index()  # vocabulary in RAM; postings are read from disk per query
-docs = pd.read_csv("Dataset/Final_docID.csv").set_index("doc_id")  # only for display
+docs = pd.read_csv("data/Final_docID.csv").set_index("doc_id")  # only for display
 
 MAX_SHOWN = 20
 

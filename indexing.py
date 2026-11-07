@@ -14,7 +14,7 @@ def tokenize(text: str) -> list[str]:
 
 import pandas as pd
 
-df = pd.read_csv("Dataset/Final_docID.csv")
+df = pd.read_csv("data/Final_docID.csv")
 
 # with open("op.txt", "w", encoding="utf-8") as f:
 #     f.write(str(tokenize(df["Text"].iloc[0])[:20]))
@@ -55,7 +55,7 @@ for doc_id, text in zip(df["doc_id"], df["Text"]):
 import pickle
 
 
-def save_index(index, postings_path="Dataset/postings.bin", vocab_path="Dataset/vocab.pkl"):
+def save_index(index, postings_path="data/postings.bin", vocab_path="data/vocab.pkl"):
     vocab = {}
     with open(postings_path, "wb") as f:
         for term, docs in index.items():

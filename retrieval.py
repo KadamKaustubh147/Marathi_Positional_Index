@@ -3,10 +3,10 @@ import re
 from itertools import product
 
 
-POSTINGS_PATH = "Dataset/postings.bin"
+POSTINGS_PATH = "data/postings.bin"
 
 
-def load_index(path="Dataset/vocab.pkl"):
+def load_index(path="data/vocab.pkl"):
     # only the vocabulary {term: [(df, cf), offset, length]} is loaded into memory
     with open(path, "rb") as f:
         return pickle.load(f)
@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
     # document texts are only used to display results, not for searching
     import pandas as pd
-    docs = pd.read_csv("Dataset/Final_docID.csv").set_index("doc_id")
+    docs = pd.read_csv("data/Final_docID.csv").set_index("doc_id")
 
     MAX_SHOWN = 10  # ponytail: no paging, add when results need browsing
 

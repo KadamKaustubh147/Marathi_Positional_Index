@@ -1,6 +1,6 @@
 # Positional Index — Plan
 
-Dataset: `Dataset/Final_docID.csv` (27,560 Marathi articles; columns `Text`, `Label`, `doc_id`)
+Dataset: `data/Final_docID.csv` (27,560 Marathi articles; columns `Text`, `Label`, `doc_id`)
 
 ## 1. Tokenizer — done
 - `tokenize(text) -> list[str]` in `indexing.py`

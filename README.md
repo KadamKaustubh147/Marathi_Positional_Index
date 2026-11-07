@@ -3,8 +3,10 @@
 A positional inverted index over a Marathi news-article dataset. It supports
 phrase and proximity queries from a command line and from a small web page.
 
+Code: https://github.com/KadamKaustubh147/Marathi_Positional_Index
+
 **Key design point:** the *vocabulary* is held in main memory; the entire
-*postings list* is stored on disk (`Dataset/postings.bin`) and only the bytes
+*postings list* is stored on disk (`data/postings.bin`) and only the bytes
 for the queried terms are read at query time.
 
 ---
@@ -29,21 +31,20 @@ pip install pandas fastapi uvicorn
 (With pip, run the commands below as `python <script>` instead of `uv run python <script>`.)
 
 ### Get the data
-1. Download the dataset (`Final.csv`, 27,560 Marathi news articles with `Text` and
-   `Label` columns) from https://github.com/l3cube-pune/MarathiNLP
-2. Put it at `Dataset/Final.csv`.
-3. Data / index copy (not included in the zip, too large): _add your Git/Drive link here_
+1. Download the preprocessed dataset `Final_docID.csv` (27,560 Marathi news articles;
+   columns `Text`, `Label`, `doc_id`) from Google Drive: _add Drive link here_
+   (original source: https://github.com/l3cube-pune/MarathiNLP)
+2. Create a folder `data/` in the project root and put the file at `data/Final_docID.csv`.
 
 ### Build and run (in this order)
 ```
-uv run python da.py            # 1. adds a doc_id column: Dataset/Final.csv -> Dataset/Final_docID.csv
-uv run python indexing.py      # 2. builds the index (~35 s): Dataset/postings.bin + Dataset/vocab.pkl
-uv run python retrieval.py     # 3a. interactive command-line search
-uv run uvicorn server:app      # 3b. web UI: open http://localhost:8000
+uv run python indexing.py      # 1. builds the index (~35 s): data/postings.bin + data/vocab.pkl
+uv run python retrieval.py     # 2a. interactive command-line search
+uv run uvicorn server:app      # 2b. web UI: open http://localhost:8000
 uv run python test_cases.py    # writes output.txt (5 test queries + 10 rare terms)
 uv run python stats.py         # index statistics
 ```
-Steps 1 and 2 are needed only once.
+Step 1 is needed only once.
 
 ---
 
@@ -70,8 +71,8 @@ Example: `बालगृहात कोरोनाच्या` with `k = 3` 
 ### Index structure
 | File | Where it lives | Content |
 |---|---|---|
-| `Dataset/vocab.pkl` | loaded into **RAM** at startup | `vocab[term] = [(df, cf), offset, length]` |
-| `Dataset/postings.bin` | stays on **disk** (~44 MB) | each term's `{doc_id: [positions]}`, pickled, written back to back |
+| `data/vocab.pkl` | loaded into **RAM** at startup | `vocab[term] = [(df, cf), offset, length]` |
+| `data/postings.bin` | stays on **disk** (~44 MB) | each term's `{doc_id: [positions]}`, pickled, written back to back |
 
 `df` (document frequency) and `cf` (collection frequency) are precomputed at build
 time, so they need no disk access.
@@ -92,7 +93,6 @@ occur. Positions are 0-based token positions within a document. Stop words are
 ### Modules
 | File | Description |
 |---|---|
-| `da.py` | one-off: adds the `doc_id` column to the original CSV |
 | `indexing.py` | tokenizer; builds `term -> {doc_id: [positions]}` in memory, then `save_index()` writes `postings.bin` and `vocab.pkl` |
 | `retrieval.py` | `load_index()` (vocabulary only), `get_postings()` (one term from disk), `search()`, and the interactive loop |
 | `server.py` | FastAPI app: loads the vocabulary once and serves `/` and `/search` |
