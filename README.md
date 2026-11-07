@@ -32,7 +32,8 @@ pip install pandas fastapi uvicorn
 
 ### Get the data
 1. Download the preprocessed dataset `Final_docID.csv` (27,560 Marathi news articles;
-   columns `Text`, `Label`, `doc_id`) from Google Drive: _add Drive link here_
+   columns `Text`, `Label`, `doc_id`) from Google Drive:
+   https://drive.google.com/drive/folders/1L8FKrono8_9jupS37x5zdkm0qH26m3vF?usp=sharing
    (original source: https://github.com/l3cube-pune/MarathiNLP)
 2. Create a folder `data/` in the project root and put the file at `data/Final_docID.csv`.
 
