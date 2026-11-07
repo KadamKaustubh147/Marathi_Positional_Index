@@ -46,22 +46,24 @@ for doc_id, text in zip(df["doc_id"], df["Text"]):
 # print(sum(len(positions) for positions in index["मारुती"].values()))
 
 
-# pickling and saving the index
-
-# defaultdict with lambda is not pickleable
-# syntax
-# [(df,cf), dictionary]
-
+# Vocabulary stays in main memory, postings go to disk.
+# vocab[term] = [(df, cf), offset, length]  -> pickled, loaded fully into RAM at query time
+# postings.bin = each term's {doc_id: [positions]} pickled and written back to back;
+#                a query reads only the bytes [offset, offset+length) of the terms it needs
 # it is very important we calculate df and cf offline so that we don't take extra time during retrieval
-plain_idx = {term: [(len(index[term]), sum(len(positions) for positions in index[term].values()) ), dict(docs)] for term, docs in index.items()}
-
-# print(plain_idx["मारुती"])
 
 import pickle
 
-def save_index(index, path="Dataset/positional_index.pkl"):
-    with open(path, "wb") as f:
-        pickle.dump(index,f)
+
+def save_index(index, postings_path="Dataset/postings.bin", vocab_path="Dataset/vocab.pkl"):
+    vocab = {}
+    with open(postings_path, "wb") as f:
+        for term, docs in index.items():
+            blob = pickle.dumps(dict(docs))  # plain dict: defaultdict with lambda is not picklable
+            vocab[term] = [(len(docs), sum(len(p) for p in docs.values())), f.tell(), len(blob)]
+            f.write(blob)
+    with open(vocab_path, "wb") as f:
+        pickle.dump(vocab, f)
 
 
-save_index(plain_idx)
+save_index(index)

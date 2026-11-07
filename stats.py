@@ -16,10 +16,8 @@ def index_stats(index):
     num_terms = len(index)
     total_occurrences = sum(v[0][1] for v in index.values())
 
-    doc_ids = set()
-    for v in index.values():
-        doc_ids.update(v[1].keys())
-    num_docs = len(doc_ids)
+    # postings are on disk now, so take the document count from the corpus itself
+    num_docs = len(pd.read_csv(CSV_PATH))
 
     avg_doc_len = total_occurrences / num_docs
 

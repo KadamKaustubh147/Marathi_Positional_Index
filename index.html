@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="mr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marathi Positional Index Search</title>
+<style>
+  body { font-family: sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; color: #222; }
+  form { display: flex; gap: .5rem; }
+  input[name=q] { flex: 1; padding: .5rem; font-size: 1rem; }
+  input[name=k] { width: 4rem; padding: .5rem; font-size: 1rem; }
+  button { padding: .5rem 1rem; font-size: 1rem; }
+  .doc { border-bottom: 1px solid #ddd; padding: 1rem 0; }
+  .toggle { background: none; border: 0; color: #06c; padding: .5rem 0 0; font-size: .9rem; cursor: pointer; }
+  .label { font-size: .8rem; color: #666; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<h1>Marathi Search</h1>
+<form id="f">
+  <input name="q" placeholder="Enter a Marathi phrase" required autofocus>
+  <input name="k" type="text" inputmode="numeric" pattern="[0-9]+" lang="en" value="1" title="k: max gap between words (1 = exact phrase)">
+  <button>Search</button>
+</form>
+<p id="status"></p>
+<div id="results"></div>
+<script>
+document.getElementById("f").onsubmit = async (e) => {
+  e.preventDefault();
+  const q = e.target.q.value, k = e.target.k.value || 1;
+  const data = await (await fetch(`/search?q=${encodeURIComponent(q)}&k=${k}`)).json();
+  document.getElementById("status").textContent = `${data.total} documents found`;
+  const box = document.getElementById("results");
+  box.replaceChildren(...data.results.map(r => {
+    const d = document.createElement("div");
+    d.className = "doc";
+    const l = document.createElement("div");
+    l.className = "label";
+    l.textContent = r.label;
+    const t = document.createElement("div");
+    const short = r.text.length > 500;
+    t.textContent = short ? r.text.slice(0, 500) + "…" : r.text;
+    d.append(l, t);
+    if (short) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "toggle";
+      b.textContent = "View full document";
+      b.onclick = () => {
+        const open = b.textContent === "Hide";
+        t.textContent = open ? r.text.slice(0, 500) + "…" : r.text;
+        b.textContent = open ? "View full document" : "Hide";
+      };
+      d.append(b);
+    }
+    return d;
+  }));
+};
+</script>
+</body>
+</html>
